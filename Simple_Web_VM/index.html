@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Web VM</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <main class="container">
+        <header>
+            <h1>Simple Web VM</h1>
+            <p>A tiny educational virtual machine running entirely in your browser.</p>
+        </header>
+        <section class="controls">
+            <div class="program">
+                <label for="program">Program</label>
+                <textarea id="program" spellcheck="false"></textarea>
+            </div>
+            <div class="io">
+                <label for="stdin">Input</label>
+                <textarea id="stdin" spellcheck="false" placeholder="Characters consumed by READ"></textarea>
+            </div>
+            <div class="io">
+                <label for="stdout">Output</label>
+                <textarea id="stdout" spellcheck="false" readonly></textarea>
+            </div>
+        </section>
+        <section class="buttons">
+            <div class="button-group">
+                <button id="loadBtn">Load Program</button>
+                <button id="stepBtn">Step</button>
+                <button id="runBtn">Run</button>
+                <button id="resetBtn">Reset</button>
+            </div>
+            <span id="status" class="status" aria-live="polite"></span>
+        </section>
+        <section class="state">
+            <div>
+                <h2>Registers</h2>
+                <table id="registerTable"></table>
+            </div>
+            <div>
+                <h2>Memory</h2>
+                <table id="memoryTable"></table>
+            </div>
+        </section>
+        <footer>
+            <p>Instruction format: <code>LABEL: OPCODE ARG1, ARG2</code> | Available opcodes listed in docs section below.</p>
+        </footer>
+        <section class="docs">
+            <h2>Instruction Set</h2>
+            <ul>
+                <li><code>LOAD rX, value|@addr</code> - load immediate or memory value into register</li>
+                <li><code>STORE rX, @addr</code> - store register into memory</li>
+                <li><code>ADD rX, rY</code> - add registers</li>
+                <li><code>SUB rX, rY</code> - subtract registers</li>
+                <li><code>INC rX</code> / <code>DEC rX</code> - increment or decrement register</li>
+                <li><code>CMP rX, rY|value</code> - compare and update zero/negative flags</li>
+                <li><code>JMP label</code> - jump unconditionally</li>
+                <li><code>JZ label</code> / <code>JNZ label</code> - jump on zero flag set or clear</li>
+                <li><code>READ rX</code> - read next character from input buffer into register</li>
+                <li><code>WRITE rX</code> - append character from register to output buffer</li>
+                <li><code>HALT</code> - stop execution</li>
+            </ul>
+        </section>
+    </main>
+    <script src="vm.js"></script>
+</body>
+</html>
