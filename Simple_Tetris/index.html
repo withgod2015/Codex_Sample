@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Tetris</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <main class="container">
+        <header>
+            <h1>Simple Tetris</h1>
+            <p>혼자서 즐기는 클래식 테트리스 · 방향키로 블록을 조작하세요.</p>
+        </header>
+        <section class="board-wrapper">
+            <canvas id="board" width="300" height="600" aria-label="Tetris board" role="img"></canvas>
+            <div class="side-panel">
+                <div class="status">
+                    <h2>Game Info</h2>
+                    <p><strong>Score:</strong> <span id="score">0</span></p>
+                    <p><strong>Lines:</strong> <span id="lines">0</span></p>
+                    <p><strong>Level:</strong> <span id="level">1</span></p>
+                    <p class="message" id="message">Press Start to play!</p>
+                </div>
+                <div class="next">
+                    <h2>Next</h2>
+                    <canvas id="next" width="120" height="120"></canvas>
+                </div>
+                <div class="controls">
+                    <button id="startBtn">Start</button>
+                    <button id="pauseBtn" disabled>Pause</button>
+                    <button id="resetBtn" disabled>Reset</button>
+                </div>
+                <section class="help">
+                    <h2>Controls</h2>
+                    <ul>
+                        <li>← → : 좌우 이동</li>
+                        <li>↑ : 회전</li>
+                        <li>↓ : 빠르게 내리기</li>
+                        <li>Space : 하드 드롭</li>
+                        <li>P : 일시정지</li>
+                    </ul>
+                </section>
+            </div>
+        </section>
+        <footer>
+            <p>테트리스 규칙에 따라 한 줄을 채우면 사라지고 점수가 올라갑니다. 레벨이 올라갈수록 블록이 빨라집니다.</p>
+        </footer>
+    </main>
+    <script src="tetris.js"></script>
+</body>
+</html>
