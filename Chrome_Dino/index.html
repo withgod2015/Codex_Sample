@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chrome Dino Clone</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="game-shell">
+        <h1>오프라인 공룡 게임</h1>
+        <div class="game" id="game">
+            <div class="ground" id="ground"></div>
+            <div class="dino" id="dino" aria-label="달리는 공룡" role="img"></div>
+            <div class="obstacle-container" id="obstacle-container"></div>
+            <div class="cloud-container" id="cloud-container"></div>
+            <div class="scoreboard">
+                <span id="score">00000</span>
+                <span id="high-score">HI 00000</span>
+            </div>
+            <div class="message" id="message">
+                <p>스페이스바 또는 ↑ 키로 점프하세요. 다시 시작하려면 R 키를 누르세요.</p>
+            </div>
+        </div>
+    </main>
+    <script src="game.js"></script>
+</body>
+</html>
