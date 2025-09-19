@@ -1,0 +1,10 @@
+﻿{
+  "manifest_version": 3,
+  "name": "Chrome Extension Tetris",
+  "version": "1.0",
+  "description": "Play a simple Tetris game directly from the Chrome toolbar.",
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Tetris"
+  }
+}
