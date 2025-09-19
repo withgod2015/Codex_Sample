@@ -1,0 +1,11 @@
+﻿{% extends "base.html" %}
+
+{% block title %}{{ page.title }} - Simple CMS{% endblock %}
+
+{% block content %}
+  <article class="page-detail">
+    <h2>{{ page.title }}</h2>
+    <p class="meta">Updated {{ page.updated_at.strftime("%Y-%m-%d %H:%M") }}</p>
+    <div class="content">{{ page.content | safe }}</div>
+  </article>
+{% endblock %}

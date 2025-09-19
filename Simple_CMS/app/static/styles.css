@@ -1,0 +1,195 @@
+﻿body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  margin: 0;
+  background: #f6f7fb;
+  color: #1c1c1c;
+}
+
+.site-header,
+.site-footer {
+  background: #1f2933;
+  color: #ffffff;
+}
+
+.site-header a,
+.site-header a:visited {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.site-header nav a {
+  margin-left: 1rem;
+  font-weight: 600;
+}
+
+.site-title {
+  margin: 0;
+}
+
+.container {
+  width: min(960px, 90vw);
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+main.container {
+  background: #ffffff;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.1);
+}
+
+.page-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.page-list li {
+  background: #f0f4ff;
+  padding: 1rem;
+  border-radius: 10px;
+}
+
+.page-detail .content {
+  background: #f0f4ff;
+  padding: 1.25rem;
+  border-radius: 10px;
+  line-height: 1.6;
+}
+
+.meta {
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.flash-messages {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.25rem 0;
+}
+
+.flash {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.flash.success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.flash.error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.admin-section .title-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.button {
+  display: inline-block;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.button.primary {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.button.secondary {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+.button.danger {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+.button.secondary:hover,
+.button.primary:hover,
+.button.danger:hover {
+  opacity: 0.85;
+}
+
+.cms-form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.cms-form input[type="text"],
+.cms-form textarea {
+  border-radius: 6px;
+  border: 1px solid #cbd5f5;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+}
+
+.cms-form textarea {
+  resize: vertical;
+}
+
+.help-text {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+  text-align: left;
+  padding: 0.75rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.status.published {
+  background: #dcfce7;
+  color: #15803d;
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+}
+
+.status.draft {
+  background: #fee2e2;
+  color: #b91c1c;
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.actions form {
+  margin: 0;
+}

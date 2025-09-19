@@ -1,0 +1,49 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Admin - Pages{% endblock %}
+
+{% block content %}
+  <section class="admin-section">
+    <div class="title-bar">
+      <h2>Manage Pages</h2>
+      <a class="button" href="{{ url_for('cms.create_page') }}">New Page</a>
+    </div>
+    {% if pages %}
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Slug</th>
+            <th>Status</th>
+            <th>Updated</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for page in pages %}
+            <tr>
+              <td>{{ page.title }}</td>
+              <td>{{ page.slug }}</td>
+              <td>
+                {% if page.is_published %}
+                  <span class="status published">Published</span>
+                {% else %}
+                  <span class="status draft">Draft</span>
+                {% endif %}
+              </td>
+              <td>{{ page.updated_at.strftime("%Y-%m-%d %H:%M") }}</td>
+              <td class="actions">
+                <a class="button secondary" href="{{ url_for('cms.edit_page', page_id=page.id) }}">Edit</a>
+                <form action="{{ url_for('cms.delete_page', page_id=page.id) }}" method="post" onsubmit="return confirm('Delete this page?');">
+                  <button class="button danger" type="submit">Delete</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>You have not created any pages yet.</p>
+    {% endif %}
+  </section>
+{% endblock %}

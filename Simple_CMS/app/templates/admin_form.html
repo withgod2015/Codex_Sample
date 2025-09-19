@@ -1,0 +1,35 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Admin - {{ "Edit" if page else "New" }} Page{% endblock %}
+
+{% block content %}
+  {% set data = form_data if form_data is not none else page %}
+  <section class="admin-section">
+    <div class="title-bar">
+      <h2>{{ "Edit" if page else "Create" }} Page</h2>
+      <a class="button secondary" href="{{ url_for('cms.admin_pages') }}">Back to list</a>
+    </div>
+    <form class="cms-form" method="post">
+      <label for="title">Title</label>
+      <input type="text" id="title" name="title" value="{{ data.title if data else '' }}" required />
+
+      <label for="slug">Slug</label>
+      <input type="text" id="slug" name="slug" value="{{ data.slug if data else '' }}" placeholder="leave blank to auto-generate" />
+      <small class="help-text">Used in the URL, e.g. /pages/your-slug</small>
+
+      <label for="content">Content</label>
+      <textarea id="content" name="content" rows="12" required>{{ data.content if data else '' }}</textarea>
+      <small class="help-text">Supports basic HTML markup.</small>
+
+      <label class="checkbox">
+        <input type="checkbox" name="is_published" {% if data and data.is_published %}checked{% endif %} />
+        Publish immediately
+      </label>
+
+      <div class="form-actions">
+        <button class="button primary" type="submit">Save</button>
+        <a class="button secondary" href="{{ url_for('cms.admin_pages') }}">Cancel</a>
+      </div>
+    </form>
+  </section>
+{% endblock %}

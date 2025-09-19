@@ -1,0 +1,22 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Simple CMS - Public Site{% endblock %}
+
+{% block content %}
+  <section>
+    <h2>Published Pages</h2>
+    {% if pages %}
+      <ul class="page-list">
+        {% for page in pages %}
+          <li>
+            <h3><a href="{{ url_for('cms.page_detail', slug=page.slug) }}">{{ page.title }}</a></h3>
+            <p class="meta">Updated {{ page.updated_at.strftime("%Y-%m-%d %H:%M") }}</p>
+            <p>{{ page.content[:180] ~ ('...' if page.content|length > 180 else '') }}</p>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No content has been published yet.</p>
+    {% endif %}
+  </section>
+{% endblock %}
