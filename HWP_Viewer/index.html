@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HWP 파일 뷰어</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header>
+        <h1>HWP 파일 뷰어</h1>
+        <p>한글(.hwp) 파일의 기본 정보와 텍스트 추출 미리보기를 확인하세요.</p>
+      </header>
+
+      <section class="upload">
+        <div class="dropzone" id="dropzone">
+          <input id="fileInput" type="file" accept=".hwp" />
+          <div>
+            <strong>파일을 드래그하거나 클릭해서 업로드</strong>
+            <span>.hwp 파일만 지원합니다.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="info">
+        <h2>파일 정보</h2>
+        <div class="info-grid" id="infoGrid">
+          <div class="info-item">
+            <span class="label">파일명</span>
+            <span class="value" id="fileName">-</span>
+          </div>
+          <div class="info-item">
+            <span class="label">크기</span>
+            <span class="value" id="fileSize">-</span>
+          </div>
+          <div class="info-item">
+            <span class="label">MIME</span>
+            <span class="value" id="fileType">-</span>
+          </div>
+          <div class="info-item">
+            <span class="label">추출 방식</span>
+            <span class="value" id="extractMode">-</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="preview">
+        <div class="panel">
+          <h2>텍스트 미리보기</h2>
+          <p class="help">HWP는 바이너리 형식이므로 일부 텍스트만 추출될 수 있습니다.</p>
+          <pre id="textPreview">파일을 업로드하면 텍스트가 표시됩니다.</pre>
+        </div>
+        <div class="panel">
+          <h2>HEX 미리보기</h2>
+          <p class="help">최대 4KB까지 표시됩니다.</p>
+          <pre id="hexPreview">파일을 업로드하면 HEX가 표시됩니다.</pre>
+        </div>
+      </section>
+
+      <section class="preview">
+        <div class="panel full">
+          <div class="panel-header">
+            <div>
+              <h2>전체 텍스트 보기</h2>
+              <p class="help">추출된 텍스트를 제한 없이 확인합니다.</p>
+            </div>
+            <button class="ghost" id="copyText">텍스트 복사</button>
+          </div>
+          <pre id="fullTextPreview">파일을 업로드하면 전체 텍스트가 표시됩니다.</pre>
+        </div>
+        <div class="panel full">
+          <div class="panel-header">
+            <div>
+              <h2>Markdown 변환</h2>
+              <p class="help">추출된 텍스트를 마크다운으로 변환합니다.</p>
+            </div>
+            <div class="actions">
+              <button class="ghost" id="copyMarkdown">Markdown 복사</button>
+              <button class="primary" id="downloadMarkdown">.md 다운로드</button>
+            </div>
+          </div>
+          <pre id="markdownPreview">파일을 업로드하면 Markdown이 표시됩니다.</pre>
+        </div>
+      </section>
+
+      <footer>
+        <p>이 뷰어는 브라우저에서 동작하며 파일은 업로드되지 않습니다.</p>
+      </footer>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
