@@ -149,6 +149,28 @@ pre {
   line-height: 1.5;
 }
 
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.toolbar button {
+  border: 1px solid var(--border);
+  background: #f8fafc;
+  color: var(--text);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.toolbar button:hover {
+  background: #eef2ff;
+  border-color: var(--accent);
+}
+
 footer {
   text-align: center;
   color: var(--muted);
