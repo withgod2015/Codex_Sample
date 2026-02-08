@@ -126,9 +126,11 @@ header p {
   gap: 12px;
 }
 
-.panel h3 {
-  margin: 0 0 8px;
-  font-size: 15px;
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
 }
 
 .panel h2 {
@@ -149,35 +151,50 @@ pre {
   padding: 16px;
   border-radius: 12px;
   overflow: auto;
-  max-height: 360px;
+  max-height: 320px;
   font-size: 12px;
   line-height: 1.5;
 }
 
-.ghost {
-  align-self: flex-start;
+textarea {
+  width: 100%;
+  min-height: 240px;
+  resize: vertical;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  padding: 14px;
+  font-size: 13px;
+  line-height: 1.6;
+  background: #f9fafb;
+  color: var(--text);
+}
+
+.ghost-button {
   border: 1px solid var(--border);
   background: transparent;
-  color: var(--text);
+  color: var(--accent);
   padding: 8px 14px;
   border-radius: 999px;
   font-size: 13px;
   cursor: pointer;
 }
 
-.ghost:hover {
+.ghost-button:hover {
   border-color: var(--accent);
-  color: var(--accent);
 }
 
-.full-text {
+.full-panel {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
+.full-panel h3 {
+  margin: 0 0 8px;
+  font-size: 15px;
+}
+
+.hidden {
   display: none;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.full-text.visible {
-  display: flex;
 }
 
 footer {
@@ -192,6 +209,11 @@ footer {
   }
 
   .dropzone {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .panel-header {
     flex-direction: column;
     align-items: flex-start;
   }
