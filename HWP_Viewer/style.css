@@ -126,6 +126,11 @@ header p {
   gap: 12px;
 }
 
+.panel h3 {
+  margin: 0 0 8px;
+  font-size: 15px;
+}
+
 .panel h2 {
   margin: 0;
   font-size: 18px;
@@ -149,26 +154,30 @@ pre {
   line-height: 1.5;
 }
 
-.toolbar {
-  display: flex;
-  flex-wrap: wrap;
+.ghost {
+  align-self: flex-start;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.ghost:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.full-text {
+  display: none;
+  flex-direction: column;
   gap: 8px;
 }
 
-.toolbar button {
-  border: 1px solid var(--border);
-  background: #f8fafc;
-  color: var(--text);
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 13px;
-  cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease;
-}
-
-.toolbar button:hover {
-  background: #eef2ff;
-  border-color: var(--accent);
+.full-text.visible {
+  display: flex;
 }
 
 footer {

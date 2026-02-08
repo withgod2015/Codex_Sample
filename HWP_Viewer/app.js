@@ -5,11 +5,12 @@ const fileSize = document.getElementById("fileSize");
 const fileType = document.getElementById("fileType");
 const extractMode = document.getElementById("extractMode");
 const textPreview = document.getElementById("textPreview");
-const textFull = document.getElementById("textFull");
-const markdownPreview = document.getElementById("markdownPreview");
-const copyMarkdown = document.getElementById("copyMarkdown");
-const downloadMarkdown = document.getElementById("downloadMarkdown");
 const hexPreview = document.getElementById("hexPreview");
+const fullTextPanel = document.getElementById("fullTextPanel");
+const fullText = document.getElementById("fullText");
+const toggleFullText = document.getElementById("toggleFullText");
+const markdownPreview = document.getElementById("markdownPreview");
+const downloadMarkdown = document.getElementById("downloadMarkdown");
 
 const HWP_SIGNATURE = [0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1];
 
@@ -55,48 +56,17 @@ const extractPrintableText = (text) => {
   const sanitized = text.replace(/\u0000/g, " ");
   const matches = sanitized.match(/[\p{Script=Hangul}A-Za-z0-9 ,.!?\n\r\t-]{6,}/gu);
   if (!matches) {
-    return "텍스트를 찾지 못했습니다. (바이너리 형식일 수 있습니다.)";
+    return null;
   }
-  const preview = matches
+  const full = matches
     .map((value) => value.trim())
     .filter(Boolean)
-    .slice(0, 40)
     .join("\n");
-  return preview || "텍스트를 찾지 못했습니다. (바이너리 형식일 수 있습니다.)";
-};
-
-const convertToMarkdown = (text) => {
-  const normalized = text
-    .replace(/\r\n/g, "\n")
-    .replace(/\n{3,}/g, "\n\n")
-    .trim();
-
-  if (!normalized) {
-    return "변환할 텍스트가 없습니다.";
+  if (!full) {
+    return null;
   }
-
-  const lines = normalized.split("\n");
-  const markdownLines = lines.map((line) => {
-    const trimmed = line.trim();
-    if (!trimmed) {
-      return "";
-    }
-    if (/^\d+[\.\)]\s+/.test(trimmed)) {
-      return `- ${trimmed}`;
-    }
-    if (/^[•·]\s+/.test(trimmed)) {
-      return `- ${trimmed.replace(/^[•·]\s+/, "")}`;
-    }
-    if (/^(제|Chapter|CHAPTER)\s?\d+/i.test(trimmed)) {
-      return `## ${trimmed}`;
-    }
-    if (trimmed.length <= 20 && /^[\p{Script=Hangul}A-Za-z0-9 ()\-\[\]]+$/u.test(trimmed)) {
-      return `### ${trimmed}`;
-    }
-    return trimmed;
-  });
-
-  return markdownLines.join("\n");
+  const preview = full.split("\n").slice(0, 40).join("\n");
+  return { preview, full };
 };
 
 const decodeWith = (buffer, encoding) => {
@@ -117,14 +87,70 @@ const updateFileInfo = (file, buffer) => {
     : "HWP 시그니처 미확인";
 };
 
+const normalizeText = (text) =>
+  text
+    .replace(/\r\n/g, "\n")
+    .replace(/\r/g, "\n")
+    .replace(/[ \t]+/g, " ")
+    .trim();
+
+const toMarkdown = (text) => {
+  const normalized = normalizeText(text);
+  if (!normalized) {
+    return "Markdown으로 변환할 텍스트가 없습니다.";
+  }
+  const lines = normalized.split("\n");
+  const output = [];
+  let previousBlank = true;
+
+  for (let i = 0; i < lines.length; i += 1) {
+    const line = lines[i].trim();
+    if (!line) {
+      if (!previousBlank) {
+        output.push("");
+      }
+      previousBlank = true;
+      continue;
+    }
+
+    const isBullet = /^[\-*\u2022]\s+/.test(line);
+    const isNumbered = /^[0-9]+[.)]\s+/.test(line);
+    const isShortTitle =
+      previousBlank &&
+      line.length <= 24 &&
+      !/[.!?]$/.test(line) &&
+      !isBullet &&
+      !isNumbered;
+
+    if (isShortTitle) {
+      output.push(`## ${line}`);
+    } else {
+      output.push(line);
+    }
+    previousBlank = false;
+  }
+
+  return output.join("\n");
+};
+
+const downloadText = (content, filename) => {
+  const blob = new Blob([content], { type: "text/markdown;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+};
+
 const handleFile = async (file) => {
   if (!file) {
     return;
   }
   if (!file.name.toLowerCase().endsWith(".hwp")) {
     textPreview.textContent = "지원하지 않는 파일입니다. .hwp 파일을 선택하세요.";
-    textFull.textContent = "-";
-    markdownPreview.textContent = "-";
     hexPreview.textContent = "-";
     return;
   }
@@ -139,15 +165,22 @@ const handleFile = async (file) => {
 
   if (!candidateText) {
     textPreview.textContent = "텍스트를 추출하지 못했습니다. 다른 파일을 시도해 주세요.";
-    textFull.textContent = "-";
-    markdownPreview.textContent = "-";
+    fullText.textContent = "전체 텍스트를 추출하지 못했습니다.";
+    markdownPreview.textContent = "Markdown으로 변환할 텍스트가 없습니다.";
     return;
   }
 
-  const previewText = extractPrintableText(candidateText);
-  textPreview.textContent = previewText;
-  textFull.textContent = candidateText.replace(/\u0000/g, " ").trim() || previewText;
-  markdownPreview.textContent = convertToMarkdown(textFull.textContent);
+  const extracted = extractPrintableText(candidateText);
+  if (!extracted) {
+    textPreview.textContent = "텍스트를 찾지 못했습니다. (바이너리 형식일 수 있습니다.)";
+    fullText.textContent = "전체 텍스트를 찾지 못했습니다. (바이너리 형식일 수 있습니다.)";
+    markdownPreview.textContent = "Markdown으로 변환할 텍스트가 없습니다.";
+    return;
+  }
+
+  textPreview.textContent = extracted.preview;
+  fullText.textContent = extracted.full;
+  markdownPreview.textContent = toMarkdown(extracted.full);
 };
 
 fileInput.addEventListener("change", (event) => {
@@ -174,30 +207,15 @@ dropzone.addEventListener("drop", (event) => {
   handleFile(file);
 });
 
-copyMarkdown.addEventListener("click", async () => {
-  const content = markdownPreview.textContent || "";
-  if (!content || content === "파일을 업로드하면 Markdown이 표시됩니다.") {
-    return;
-  }
-  await navigator.clipboard.writeText(content);
-  copyMarkdown.textContent = "복사됨!";
-  setTimeout(() => {
-    copyMarkdown.textContent = "Markdown 복사";
-  }, 1200);
+toggleFullText.addEventListener("click", () => {
+  const isVisible = fullTextPanel.classList.toggle("visible");
+  toggleFullText.textContent = isVisible ? "접기" : "전체 보기";
 });
 
 downloadMarkdown.addEventListener("click", () => {
-  const content = markdownPreview.textContent || "";
-  if (!content || content === "파일을 업로드하면 Markdown이 표시됩니다.") {
+  const content = markdownPreview.textContent;
+  if (!content || content === "Markdown으로 변환할 텍스트가 없습니다.") {
     return;
   }
-  const blob = new Blob([content], { type: "text/markdown;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "hwp-extract.md";
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
+  downloadText(content, "hwp-preview.md");
 });
