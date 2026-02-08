@@ -1,0 +1,105 @@
+:root {
+  color-scheme: light;
+  font-family: "Pretendard", "Noto Sans KR", sans-serif;
+  background: #f4f1e8;
+  color: #2f2f2f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 32px 16px 48px;
+}
+
+.app {
+  max-width: 860px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+header {
+  text-align: center;
+}
+
+h1 {
+  margin-bottom: 8px;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.controls select,
+.controls button {
+  padding: 8px 12px;
+  font-size: 15px;
+  border-radius: 6px;
+  border: 1px solid #b0aa9d;
+  background: #fff;
+  cursor: pointer;
+}
+
+.controls button {
+  background: #514737;
+  color: #fff;
+  border: none;
+}
+
+.status {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  font-weight: 600;
+}
+
+.board-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+canvas {
+  background: #d9b976;
+  border-radius: 12px;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
+  max-width: 100%;
+  height: auto;
+}
+
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+}
+
+.stone {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.stone::before {
+  content: "";
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.stone.black::before {
+  background: #111;
+}
+
+.stone.white::before {
+  background: #fdfdfd;
+  border: 1px solid #888;
+}
