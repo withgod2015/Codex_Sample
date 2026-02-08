@@ -6,14 +6,11 @@ const fileType = document.getElementById("fileType");
 const extractMode = document.getElementById("extractMode");
 const textPreview = document.getElementById("textPreview");
 const hexPreview = document.getElementById("hexPreview");
-const fullTextPanel = document.getElementById("fullTextPanel");
-const fullText = document.getElementById("fullText");
-const fullHexPanel = document.getElementById("fullHexPanel");
-const fullHex = document.getElementById("fullHex");
-const toggleFullText = document.getElementById("toggleFullText");
-const toggleFullHex = document.getElementById("toggleFullHex");
-const markdownOutput = document.getElementById("markdownOutput");
-const downloadMarkdown = document.getElementById("downloadMarkdown");
+const fullTextPreview = document.getElementById("fullTextPreview");
+const markdownPreview = document.getElementById("markdownPreview");
+const copyTextButton = document.getElementById("copyText");
+const copyMarkdownButton = document.getElementById("copyMarkdown");
+const downloadMarkdownButton = document.getElementById("downloadMarkdown");
 
 const HWP_SIGNATURE = [0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1];
 
@@ -39,9 +36,8 @@ const matchesSignature = (buffer) => {
   return HWP_SIGNATURE.every((value, index) => bytes[index] === value);
 };
 
-const toHexPreview = (buffer, maxBytes) => {
-  const limit = maxBytes ?? buffer.byteLength;
-  const bytes = new Uint8Array(buffer.slice(0, limit));
+const toHexPreview = (buffer, maxBytes = 4096) => {
+  const bytes = new Uint8Array(buffer.slice(0, maxBytes));
   const lines = [];
   for (let i = 0; i < bytes.length; i += 16) {
     const chunk = bytes.slice(i, i + 16);
@@ -56,18 +52,27 @@ const toHexPreview = (buffer, maxBytes) => {
   return lines.join("\n");
 };
 
-const extractPrintableText = (text, limit = 40) => {
+const extractPrintableText = (text) => {
   const sanitized = text.replace(/\u0000/g, " ");
   const matches = sanitized.match(/[\p{Script=Hangul}A-Za-z0-9 ,.!?\n\r\t-]{6,}/gu);
   if (!matches) {
-    return "텍스트를 찾지 못했습니다. (바이너리 형식일 수 있습니다.)";
+    return {
+      preview: "텍스트를 찾지 못했습니다. (바이너리 형식일 수 있습니다.)",
+      fullText: "",
+    };
   }
-  const preview = matches
+  const cleaned = matches
     .map((value) => value.trim())
     .filter(Boolean)
-    .slice(0, limit)
     .join("\n");
-  return preview || "텍스트를 찾지 못했습니다. (바이너리 형식일 수 있습니다.)";
+  const preview = cleaned
+    .split("\n")
+    .slice(0, 40)
+    .join("\n");
+  return {
+    preview: preview || "텍스트를 찾지 못했습니다. (바이너리 형식일 수 있습니다.)",
+    fullText: cleaned,
+  };
 };
 
 const decodeWith = (buffer, encoding) => {
@@ -85,28 +90,66 @@ const updateFileInfo = (file, buffer) => {
   fileType.textContent = file.type || "application/haansoft-hwp";
   extractMode.textContent = matchesSignature(buffer)
     ? "HWP 시그니처 확인됨 (OLE)"
-    : "HWP 시그니처 미확인";
+    : "HWP 시그니처 미확인 (텍스트 추출 방식)";
 };
 
-const toMarkdown = (file, fullTextContent) => {
-  if (!fullTextContent) {
-    return "텍스트를 추출하지 못했습니다.";
+const normalizeMarkdown = (text) => {
+  if (!text) {
+    return "변환할 텍스트가 없습니다.";
   }
-  const lines = fullTextContent.split(/\r?\n/).map((line) => line.trim());
-  const body = lines.filter(Boolean).join("\n\n");
-  return `# ${file.name}\n\n${body}`;
+  const normalized = text.replace(/\r\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
+  const lines = normalized.split("\n");
+  return lines
+    .map((line) => {
+      const trimmed = line.trim();
+      if (!trimmed) {
+        return "";
+      }
+      if (/^[-*•]\s+/.test(trimmed)) {
+        return `- ${trimmed.replace(/^[-*•]\s+/, "")}`;
+      }
+      if (/^\d+\.\s+/.test(trimmed)) {
+        return trimmed;
+      }
+      return trimmed;
+    })
+    .join("\n")
+    .trim();
 };
 
-const resetPanels = () => {
-  textPreview.textContent = "파일을 업로드하면 텍스트가 표시됩니다.";
-  hexPreview.textContent = "파일을 업로드하면 HEX가 표시됩니다.";
-  fullText.textContent = "-";
-  fullHex.textContent = "-";
-  markdownOutput.value = "";
-  fullTextPanel.classList.add("hidden");
-  fullHexPanel.classList.add("hidden");
-  toggleFullText.textContent = "전체 보기";
-  toggleFullHex.textContent = "전체 보기";
+const updateFullText = (fullText) => {
+  fullTextPreview.textContent =
+    fullText || "전체 텍스트를 찾지 못했습니다. (바이너리 형식일 수 있습니다.)";
+  markdownPreview.textContent = normalizeMarkdown(fullText);
+};
+
+const copyToClipboard = async (text, fallbackMessage) => {
+  if (!text) {
+    alert(fallbackMessage);
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(text);
+    alert("클립보드에 복사되었습니다.");
+  } catch (error) {
+    alert("클립보드 복사에 실패했습니다.");
+  }
+};
+
+const downloadMarkdown = (text, fileNameValue) => {
+  if (!text) {
+    alert("다운로드할 Markdown이 없습니다.");
+    return;
+  }
+  const blob = new Blob([text], { type: "text/markdown;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `${fileNameValue || "hwp"}.md`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
 };
 
 const handleFile = async (file) => {
@@ -116,16 +159,14 @@ const handleFile = async (file) => {
   if (!file.name.toLowerCase().endsWith(".hwp")) {
     textPreview.textContent = "지원하지 않는 파일입니다. .hwp 파일을 선택하세요.";
     hexPreview.textContent = "-";
-    fullText.textContent = "-";
-    fullHex.textContent = "-";
-    markdownOutput.value = "";
+    fullTextPreview.textContent = "-";
+    markdownPreview.textContent = "-";
     return;
   }
 
   const buffer = await file.arrayBuffer();
   updateFileInfo(file, buffer);
-  hexPreview.textContent = toHexPreview(buffer, 4096);
-  fullHex.textContent = toHexPreview(buffer);
+  hexPreview.textContent = toHexPreview(buffer);
 
   const utf16 = decodeWith(buffer, "utf-16le");
   const utf8 = decodeWith(buffer, "utf-8");
@@ -133,16 +174,14 @@ const handleFile = async (file) => {
 
   if (!candidateText) {
     textPreview.textContent = "텍스트를 추출하지 못했습니다. 다른 파일을 시도해 주세요.";
-    fullText.textContent = "텍스트를 추출하지 못했습니다. 다른 파일을 시도해 주세요.";
-    markdownOutput.value = "텍스트를 추출하지 못했습니다.";
+    fullTextPreview.textContent = "-";
+    markdownPreview.textContent = "-";
     return;
   }
 
-  const previewText = extractPrintableText(candidateText, 40);
-  const fullTextContent = extractPrintableText(candidateText, 5000);
-  textPreview.textContent = previewText;
-  fullText.textContent = fullTextContent;
-  markdownOutput.value = toMarkdown(file, fullTextContent);
+  const result = extractPrintableText(candidateText);
+  textPreview.textContent = result.preview;
+  updateFullText(result.fullText);
 };
 
 fileInput.addEventListener("change", (event) => {
@@ -169,31 +208,14 @@ dropzone.addEventListener("drop", (event) => {
   handleFile(file);
 });
 
-toggleFullText.addEventListener("click", () => {
-  fullTextPanel.classList.toggle("hidden");
-  toggleFullText.textContent = fullTextPanel.classList.contains("hidden")
-    ? "전체 보기"
-    : "접기";
+copyTextButton.addEventListener("click", () => {
+  copyToClipboard(fullTextPreview.textContent, "복사할 텍스트가 없습니다.");
 });
 
-toggleFullHex.addEventListener("click", () => {
-  fullHexPanel.classList.toggle("hidden");
-  toggleFullHex.textContent = fullHexPanel.classList.contains("hidden")
-    ? "전체 보기"
-    : "접기";
+copyMarkdownButton.addEventListener("click", () => {
+  copyToClipboard(markdownPreview.textContent, "복사할 Markdown이 없습니다.");
 });
 
-downloadMarkdown.addEventListener("click", () => {
-  const content = markdownOutput.value || "텍스트를 추출하지 못했습니다.";
-  const blob = new Blob([content], { type: "text/markdown;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const anchor = document.createElement("a");
-  anchor.href = url;
-  anchor.download = `${fileName.textContent || "document"}.md`;
-  document.body.appendChild(anchor);
-  anchor.click();
-  anchor.remove();
-  URL.revokeObjectURL(url);
+downloadMarkdownButton.addEventListener("click", () => {
+  downloadMarkdown(markdownPreview.textContent, fileName.textContent.replace(/\.hwp$/i, ""));
 });
-
-resetPanels();

@@ -126,11 +126,48 @@ header p {
   gap: 12px;
 }
 
+.panel.full pre {
+  max-height: 420px;
+}
+
 .panel-header {
   display: flex;
-  justify-content: space-between;
-  gap: 12px;
   align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.primary,
+.ghost {
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 13px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+}
+
+.primary {
+  background: var(--accent);
+  color: #ffffff;
+  box-shadow: 0 8px 20px rgba(76, 110, 245, 0.2);
+}
+
+.ghost {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text);
+}
+
+.primary:hover,
+.ghost:hover {
+  transform: translateY(-1px);
 }
 
 .panel h2 {
@@ -151,50 +188,9 @@ pre {
   padding: 16px;
   border-radius: 12px;
   overflow: auto;
-  max-height: 320px;
+  max-height: 360px;
   font-size: 12px;
   line-height: 1.5;
-}
-
-textarea {
-  width: 100%;
-  min-height: 240px;
-  resize: vertical;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  padding: 14px;
-  font-size: 13px;
-  line-height: 1.6;
-  background: #f9fafb;
-  color: var(--text);
-}
-
-.ghost-button {
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--accent);
-  padding: 8px 14px;
-  border-radius: 999px;
-  font-size: 13px;
-  cursor: pointer;
-}
-
-.ghost-button:hover {
-  border-color: var(--accent);
-}
-
-.full-panel {
-  border-top: 1px solid var(--border);
-  padding-top: 12px;
-}
-
-.full-panel h3 {
-  margin: 0 0 8px;
-  font-size: 15px;
-}
-
-.hidden {
-  display: none;
 }
 
 footer {
@@ -216,5 +212,9 @@ footer {
   .panel-header {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .actions {
+    flex-wrap: wrap;
   }
 }
