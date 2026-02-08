@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Gomoku</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header>
+        <h1>오목 (Gomoku)</h1>
+        <p>사람 vs 컴퓨터 또는 사람 vs 사람 모드로 즐겨보세요.</p>
+      </header>
+
+      <section class="controls">
+        <label for="mode">모드</label>
+        <select id="mode">
+          <option value="ai">사람 vs 컴퓨터</option>
+          <option value="pvp">사람 vs 사람</option>
+        </select>
+        <button id="restart">새 게임</button>
+      </section>
+
+      <section class="status" aria-live="polite">
+        <span id="turn">현재 차례: 흑돌</span>
+        <span id="message"></span>
+      </section>
+
+      <section class="board-wrapper">
+        <canvas id="board" width="600" height="600" aria-label="오목판" role="img"></canvas>
+      </section>
+
+      <section class="legend">
+        <div class="stone black">흑돌</div>
+        <div class="stone white">백돌</div>
+      </section>
+    </div>
+
+    <script src="gomoku.js"></script>
+  </body>
+</html>
